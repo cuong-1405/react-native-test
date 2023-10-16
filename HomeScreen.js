@@ -9,8 +9,9 @@ import {
   StyleSheet,
 } from "react-native";
 import PostItem from "./PostItem";
+import { TouchableOpacity } from "react-native";
 import ImagePicker from "react-native-image-picker";
-
+import { launchCamera, launchImageLibrary } from "react-native-image-picker";
 const HomeScreen = ({ navigation }) => {
   const [postText, setPostText] = useState("");
   const [postImage, setPostImage] = useState(null);
@@ -24,17 +25,15 @@ const HomeScreen = ({ navigation }) => {
         path: "images",
       },
     };
-
-    ImagePicker.showImagePicker(options, (response) => {
-      if (response.didCancel) {
-        console.log("User cancelled image picker");
-      } else if (response.error) {
-        console.log("ImagePicker Error: ", response.error);
-      } else {
-        const source = { uri: response.uri };
-        setPostImage(source);
-      }
-    });
+    // ImagePicker.showImagePicker(options, (response) => {
+    //   // if (response.didCancel) {
+    //   //   console.log("User cancelled image picker");
+    //   // } else if (response.error) {
+    //   //   console.log("ImagePicker Error: ", response.error);
+    //   // } else {
+    //   const source = { uri: response.uri };
+    //   setPostImage(source);
+    // });
   };
 
   const handlePost = () => {
@@ -72,17 +71,28 @@ const HomeScreen = ({ navigation }) => {
     <View style={styles.container}>
       {/* Post Section */}
       <View style={styles.postSection}>
-        <TextInput
-          value={postText}
-          onChangeText={setPostText}
-          placeholder="Bạn đang nghĩ gì ?"
-          style={styles.postInput}
-        />
+        <View style={styles.thoughtContainer}>
+          <TextInput
+            value={postText}
+            onChangeText={setPostText}
+            placeholder="Bạn đang nghĩ gì ?"
+            style={styles.postInput}
+          />
+        </View>
         {postImage && (
           <Image source={postImage} style={styles.postImagePreview} />
         )}
-        <Button title="Choose Image" onPress={chooseImage} />
-        <Button title="Post" onPress={handlePost} />
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={styles.chooseImageButton}
+            onPress={chooseImage}
+          >
+            <Text style={styles.buttonText}>Chọn ảnh</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.postButton} onPress={handlePost}>
+            <Text style={styles.buttonText}>Đăng bài</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       {/* Posts List */}
@@ -103,37 +113,35 @@ const HomeScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#f5f5f5",
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
-  header: {
-    height: 50,
-    borderBottomWidth: 1,
-    borderColor: "#ddd",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  postSection: {
-    padding: 10,
-    borderBottomWidth: 1,
-    borderColor: "#ddd",
-  },
-  postInput: {
+  thoughtContainer: {
+    marginBottom: 50,
     borderWidth: 1,
-    borderColor: "#ddd",
-    padding: 10,
-    marginBottom: 10,
-    borderRadius: 5,
+    borderColor: "#ccc", // Màu khung
+    borderRadius: 5, // Độ cong của góc khun
   },
-  postImagePreview: {
-    width: "100%",
-    height: 200,
-    marginBottom: 10,
+  chooseImageButton: {
+    backgroundColor: "#FF5733", // Màu cam
+    padding: 10,
+    borderRadius: 5,
+    flex: 1,
+    marginRight: 5, // khoảng cách giữa hai nút
+    alignItems: "center",
+  },
+  postButton: {
+    backgroundColor: "#33B8FF", // Màu xanh dương
+    padding: 10,
+    borderRadius: 5,
+    flex: 1,
+    marginLeft: 5, // khoảng cách giữa hai nút
+    alignItems: "center",
+  },
+  buttonText: {
+    color: "#FFF",
+    fontSize: 16,
   },
 });
 

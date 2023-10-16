@@ -35,6 +35,12 @@ const BottomTabNavigator = () => {
       tabBarOptions={{
         activeTintColor: "tomato", // Color when tab is active
         inactiveTintColor: "gray", // Color when tab is inactive
+        tabBarStyle: [
+          {
+            display: "flex",
+          },
+          null,
+        ],
       }}
     >
       <Tab.Screen name="Home" component={HomeScreen} />

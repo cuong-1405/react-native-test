@@ -1,54 +1,66 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, Button, Image } from "react-native";
+import React, { Component } from "react";
+import { View, Text, TextInput, Button, StyleSheet } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const LoginScreen = ({ navigation }) => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-
-  useEffect(() => {
-    // Fetch the saved login info when the app loads
-    const fetchLoginInfo = async () => {
-      const savedUsername = await AsyncStorage.getItem("username");
-      const savedPassword = await AsyncStorage.getItem("password");
-      if (savedUsername && savedPassword) {
-        setUsername(savedUsername);
-        setPassword(savedPassword);
-      }
+class LoginScreen extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      username: "",
+      password: "",
     };
-    fetchLoginInfo();
-  }, []);
+  }
 
-  const handleLogin = async () => {
-    // Perform login actions here, e.g., validation, API calls, etc.
-    // If login is successful:
-    await AsyncStorage.setItem("username", username);
-    await AsyncStorage.setItem("password", password);
-    navigation.replace("HomeTabs");
+  handleLogin = async () => {
+    // Lưu thông tin đăng nhập vào AsyncStorage
+    await AsyncStorage.setItem("username", this.state.username);
+    await AsyncStorage.setItem("password", this.state.password);
+
+    // Thực hiện các bước đăng nhập, ví dụ: gửi yêu cầu đăng nhập đến máy chủ
+
+    // Chuyển đến màn hình chính sau khi đăng nhập thành công
+    this.props.navigation.navigate("HomeTabs");
   };
 
-  return (
-    <View>
-      <Image
-        source={{ uri: "https://your-image-url.com" }}
-        style={{ width: 100, height: 100 }}
-      />
-      <Text>Username:</Text>
-      <TextInput
-        value={username}
-        onChangeText={setUsername}
-        placeholder="Enter your username"
-      />
-      <Text>Password:</Text>
-      <TextInput
-        value={password}
-        onChangeText={setPassword}
-        placeholder="Enter your password"
-        secureTextEntry={true}
-      />
-      <Button title="Login" onPress={handleLogin} />
-    </View>
-  );
-};
+  render() {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.header}>Đăng nhập</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Tên người dùng"
+          onChangeText={(text) => this.setState({ username: text })}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Mật khẩu"
+          secureTextEntry={true}
+          onChangeText={(text) => this.setState({ password: text })}
+        />
+        <Button title="Đăng nhập" onPress={this.handleLogin} />
+      </View>
+    );
+  }
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  header: {
+    fontSize: 24,
+    marginBottom: 20,
+  },
+  input: {
+    width: "80%",
+    height: 40,
+    borderColor: "gray",
+    borderWidth: 1,
+    marginBottom: 10,
+    paddingHorizontal: 10,
+  },
+});
 
 export default LoginScreen;
